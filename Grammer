@@ -1,0 +1,44 @@
+Program → Function*
+Function → Type Identifier ( ParameterList ) { Statement* }
+ParameterList → Parameter (, Parameter)*
+Parameter → Type Identifier
+Type → int | float | char | double | string | void
+Declaration → Type Identifier (= Expression)? ;
+ArrayDeclaration → Type Identifier [ Integer ] ;
+Expression → Term ((+ | -) Term)*
+Term → Factor ((* | /) Factor)*
+Factor → Identifier | Number | ( Expression )
+Statement → IfStatement | WhileStatement | ForStatement | ReturnStatement | Assignment | Declaration
+IfStatement → if ( Expression ) { Statement* } (else { Statement* })?
+WhileStatement → while ( Expression ) { Statement* }
+ForStatement → for ( Expression? ; Expression? ; Expression? ) { Statement* }
+ReturnStatement → return Expression? ;
+Assignment → Identifier (= | += | -= | *= | /=) Expression ;
+LogicalExpression → RelationalExpression (&& | ||) RelationalExpression
+RelationalExpression → Expression (> | < | >= | <= | == | !=) Expression
+Literal → Integer | Float | String | Char
+Integer → [0-9]+
+Float → [0-9]*\.[0-9]+
+String → "[^"]*"
+Char → '[^']'
+UnaryOperator → + | - | !
+BinaryOperator → + | - | * | / | %
+LogicalOperator → && | ||
+ComparisonOperator → > | < | == | != | >= | <=
+Block → { Statement* }
+FunctionCall → Identifier ( ArgumentList? )
+ArgumentList → Expression (, Expression)*
+PointerDeclaration → Type * Identifier ;
+PointerAssignment → Identifier = & Identifier ;
+ArrayAccess → Identifier [ Expression ]
+ArrayInitialization → Type Identifier [ Integer ] = { ExpressionList }
+ExpressionList → Expression (, Expression)*
+DoWhileStatement → do { Statement* } while ( Expression ) ;
+ClassDeclaration → class Identifier { Member* }
+Member → Type Identifier ; | Function
+ObjectCreation → Identifier = new Identifier ;
+StructDeclaration → struct Identifier { Declaration* } ;
+PrintStatement → print ( String , ArgumentList? ) ;
+ScanStatement → scan ( String , & Identifier ) ;
+BitwiseExpression → Expression (& | | | ^) Expression
+IncludeDirective → @import < Identifier >
