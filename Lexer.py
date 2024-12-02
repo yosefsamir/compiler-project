@@ -1,5 +1,5 @@
 import re
-
+from tokens import *
 class Lexer:
     def __init__(self, code):
         self.code = code.replace('\n', ' ')
@@ -60,45 +60,43 @@ class Lexer:
         right = 0
 
         while self.length > right >= left:
-            # Handle multi-character operators first
             if self.code[right:right + 2] in ['>=', '<=', '==', '!=', '&&', '||']:
-                self.tokens.append({'token class': 'relational operator', 'lexeme': self.code[right:right + 2]})
+                self.tokens.append(RelationalOperatorToken(self.code[right:right + 2]))
                 right += 2
                 left = right
                 continue
 
-            # Process individual characters
             if not self.is_delimiter(self.code[right]):
                 right += 1
 
             if self.is_delimiter(self.code[right]) and left == right:
                 if self.is_operator(self.code[right]):
-                    self.tokens.append({'token class': 'operator', 'lexeme': self.code[right]})
+                    self.tokens.append(OperatorToken(self.code[right]))
                 elif self.is_delimiter(self.code[right]) and self.code[right] != ' ':
-                    self.tokens.append({'token class': 'delimiter', 'lexeme': self.code[right]})
+                    self.tokens.append(DelimiterToken(self.code[right]))
                 right += 1
                 left = right
 
             elif self.is_delimiter(self.code[right]) and left != right or (right == self.length and left != right):
                 word = self.substring(self.code, left, right)
                 if self.is_keyword(word):
-                    self.tokens.append({'token class': 'keyword', 'lexeme': word})
+                    self.tokens.append(KeywordToken(word))
                 elif self.is_type(word):
-                    self.tokens.append({'token class': 'type', 'lexeme': word})
+                    self.tokens.append(TypeToken(word))
                 elif self.is_valid_identifier(word):
-                    self.tokens.append({'token class': 'identifier', 'lexeme': word})
+                    self.tokens.append(IdentifierToken(word))
                 elif self.is_integer(word):
-                    self.tokens.append({'token class': 'integer', 'lexeme': word})
+                    self.tokens.append(IntegerToken(word))
                 elif self.is_scientific_number(word):
-                    self.tokens.append({'token class': 'Scientific number', 'lexeme': word})
+                    self.tokens.append(ScientificNumberToken(word))
                 elif self.is_real_number(word):
-                    self.tokens.append({'token class': 'real number', 'lexeme': word})
+                    self.tokens.append(FloatToken(word))
                 elif self.is_string_literal(word):
-                    self.tokens.append({'token class': 'string literal', 'lexeme': word})
+                    self.tokens.append(StringToken(word))
                 elif self.is_character_literal(word):
-                    self.tokens.append({'token class': 'character literal', 'lexeme': word})
+                    self.tokens.append(CharacterToken(word))
                 else:
-                    self.tokens.append({'token class': 'invalid', 'lexeme': word})
+                    self.tokens.append(InvalidToken(word))
                 left = right
 
         return self.tokens
