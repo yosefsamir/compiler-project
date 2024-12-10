@@ -1,7 +1,3 @@
+int z = 5;
 
-int data = 1;
-string s = "ahmed";
-function display(string data)
-{
-    print(data);
-}
+return 0;
