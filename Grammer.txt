@@ -1,0 +1,105 @@
+Program -> Declaration Program_Tail 
+Program -> Statement Program_Tail 
+Program_Tail -> Program 
+Program_Tail -> ε 
+
+Declaration -> Variable_Declaration 
+Declaration -> Function_Definition 
+
+Variable_Declaration -> Type Identifier Variable_Declaration_Tail 
+Variable_Declaration_Tail -> End_Line 
+Variable_Declaration_Tail -> = Expression End_Line 
+Variable_Declaration_Tail -> [ Number ] Variable_Array_Tail 
+Variable_Array_Tail -> End_Line 
+Variable_Array_Tail -> = { Array_Values } End_Line 
+
+Type -> int 
+Type -> float 
+Type -> char 
+Type -> string 
+Type -> bool 
+Type -> big int 
+Type -> double 
+Type -> small int 
+
+Array_Values -> Expression Array_Values_Tail 
+Array_Values_Tail -> , Expression Array_Values_Tail 
+Array_Values_Tail -> ε 
+
+Function_Definition -> function Identifier ( Parameters ) { Program } 
+Parameters -> Parameter Parameters_Tail 
+Parameters_Tail -> , Parameter Parameters_Tail 
+Parameters_Tail -> ε 
+Parameter -> Type Identifier Parameter_Tail 
+Parameter_Tail -> [ ] 
+Parameter_Tail -> = Expression 
+Parameter_Tail -> ε 
+
+Statement -> Assignment 
+Statement -> If_Statement 
+Statement -> While_Statement 
+Statement -> For_Statement 
+Statement -> Return_Statement 
+Statement -> Function_Call 
+Statement -> Print
+
+Assignment ->  Identifier = Expression End_Line 
+
+If_Statement -> if ( Conditions ) { Program } If_Statement_Tail
+If_Statement_Tail -> Else_If_Statements Optional_Else
+Else_If_Statements -> Else_If_Statement Else_If_Statements
+Else_If_Statements -> ε
+Else_If_Statement -> elseif ( Conditions ) { Program }
+Optional_Else -> Else_Statement 
+Optional_Else -> ε
+Else_Statement -> else { Program }
+
+
+While_Statement -> while ( Conditions ) { Program } 
+
+For_Statement -> for ( Parameters ; Conditions ; Assignment ) { Program } 
+
+Return_Statement -> return Expression End_Line 
+
+Function_Call -> Identifier ( Arguments ) End_Line 
+Arguments -> Expression Arguments_Tail 
+Arguments_Tail -> , Expression Arguments_Tail 
+Arguments_Tail -> ε 
+
+Expression -> Term Expression_Tail 
+Expression_Tail -> + Term Expression_Tail 
+Expression_Tail -> - Term Expression_Tail 
+Expression_Tail -> ε 
+
+Term -> Factor Term_Tail 
+Term_Tail -> * Factor Term_Tail 
+Term_Tail -> / Factor Term_Tail 
+Term_Tail -> ε 
+
+Factor -> Identifier 
+Factor -> Number
+Factor -> string_literal  
+Factor -> ( Expression ) 
+
+Conditions -> Condition Conditions_Tail 
+Conditions_Tail -> && Condition Conditions_Tail 
+Conditions_Tail -> || Condition Conditions_Tail 
+Conditions_Tail -> ε 
+Condition -> Expression Relational_Operator Expression 
+
+Relational_Operator -> == 
+Relational_Operator -> != 
+Relational_Operator -> < 
+Relational_Operator -> <= 
+Relational_Operator -> > 
+Relational_Operator -> >= 
+
+Print -> print ( Expression ) End_Line
+
+End_Line -> ; 
+
+Identifier -> id
+
+string_literal -> str
+ 
+Number -> num

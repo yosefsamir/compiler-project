@@ -1,5 +1,7 @@
 import re
 from tokens import *
+
+
 class Lexer:
     def __init__(self, code):
         self.code = code.replace('\n', ' ')
@@ -21,7 +23,7 @@ class Lexer:
         return word in operators
 
     def is_delimiter(self, word):
-        delimiters = [' ', '(', ')', '[', ']', '{', '}', ',', ';', '+', '-', '*', '/', '=']
+        delimiters = [' ', '(', ')', '[', ']', '{', '}', ',', ';', '+', '-', '*', '/', '=', '<', '>', '&', '|']
         return word in delimiters
 
     def is_valid_identifier(self, word):
@@ -37,7 +39,7 @@ class Lexer:
         return word in types
 
     def is_keyword(self, word):
-        keywords = ["function", "if", "while", "for", "else if", "else", "return", "print", "main"]
+        keywords = ["function", "if", "while", "for", "elseif", "else", "return", "print", "main"]
         return word in keywords
 
     def is_integer(self, word):
@@ -72,6 +74,8 @@ class Lexer:
             if self.is_delimiter(self.code[right]) and left == right:
                 if self.is_operator(self.code[right]):
                     self.tokens.append(OperatorToken(self.code[right]))
+                elif self.is_relational_operator(self.code[right]):
+                    self.tokens.append(RelationalOperatorToken(self.code[right]))
                 elif self.is_delimiter(self.code[right]) and self.code[right] != ' ':
                     self.tokens.append(DelimiterToken(self.code[right]))
                 right += 1

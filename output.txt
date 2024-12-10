@@ -1,7 +1,135 @@
+JSON Formatted Output:
+[
+    [
+        "x",
+        "=",
+        [
+            "5",
+            "+",
+            [
+                [
+                    "10",
+                    "*",
+                    "2"
+                ],
+                "*",
+                "9"
+            ]
+        ]
+    ],
+    [
+        "z",
+        "=",
+        [
+            [
+                "5",
+                "*",
+                "10"
+            ],
+            "+",
+            "x"
+        ]
+    ],
+    {
+        "type": "if",
+        "conditions": {
+            "condition": {
+                "left": "x",
+                "operator": "<",
+                "right": "5"
+            },
+            "tail": {
+                "operator": "&&",
+                "condition": {
+                    "left": "5",
+                    "operator": "==",
+                    "right": "10"
+                },
+                "tail": null
+            }
+        },
+        "program": [
+            {
+                "type": "if",
+                "conditions": {
+                    "condition": {
+                        "left": "x",
+                        "operator": ">",
+                        "right": "5"
+                    },
+                    "tail": null
+                },
+                "program": [
+                    [
+                        "x",
+                        "=",
+                        "1"
+                    ]
+                ],
+                "else_if": [
+                    {
+                        "conditions": {
+                            "condition": {
+                                "left": "x",
+                                "operator": "<=",
+                                "right": "5"
+                            },
+                            "tail": null
+                        },
+                        "program": [
+                            [
+                                "x",
+                                "=",
+                                "0"
+                            ]
+                        ]
+                    }
+                ],
+                "else": null
+            }
+        ],
+        "else_if": [
+            {
+                "conditions": {
+                    "condition": {
+                        "left": "z",
+                        "operator": "==",
+                        "right": "5"
+                    },
+                    "tail": null
+                },
+                "program": [
+                    [
+                        "x",
+                        "=",
+                        "0"
+                    ]
+                ]
+            }
+        ],
+        "else": null
+    }
+]
 
-  =___
- /    \
-x     _+
-     /  \
-    10   b
+Binary Tree Representation:
 
+  =__
+ /   \
+x     +_______
+     /        \
+    5        __*
+            /   \
+          _*     9
+         /  \
+        10   2
+
+
+  =_______
+ /        \
+z       ___+
+       /    \
+      *      x
+     / \
+    5   10
+
+{'type': 'if', 'conditions': {'condition': {'left': 'x', 'operator': '<', 'right': '5'}, 'tail': {'operator': '&&', 'condition': {'left': '5', 'operator': '==', 'right': '10'}, 'tail': None}}, 'program': [{'type': 'if', 'conditions': {'condition': {'left': 'x', 'operator': '>', 'right': '5'}, 'tail': None}, 'program': [['x', '=', '1']], 'else_if': [{'conditions': {'condition': {'left': 'x', 'operator': '<=', 'right': '5'}, 'tail': None}, 'program': [['x', '=', '0']]}], 'else': None}], 'else_if': [{'conditions': {'condition': {'left': 'z', 'operator': '==', 'right': '5'}, 'tail': None}, 'program': [['x', '=', '0']]}], 'else': None}

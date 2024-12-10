@@ -1,1 +1,7 @@
-int x = 10 + b;
+
+int data = 1;
+string s = "ahmed";
+function display(string data)
+{
+    print(data);
+}
