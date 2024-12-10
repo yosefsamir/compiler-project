@@ -11,6 +11,8 @@ class LL1:
 
     def parse(self):
         input_pointer = 0
+        if len(self.tokens) == 0:
+            return True
         current_token = self.tokens[input_pointer].lexeme
         if isinstance(self.tokens[input_pointer], IntegerToken) or isinstance(self.tokens[input_pointer], FloatToken):
             current_token = 'num'
@@ -18,7 +20,7 @@ class LL1:
             current_token = 'str'
         elif isinstance(self.tokens[input_pointer], IdentifierToken):
             current_token = 'id'
-
+        result = False
         while self.stack:
             top = self.stack[-1]
             
@@ -30,6 +32,7 @@ class LL1:
 
             if top == '$' and current_token == '$':
                 self.trace[-1]["rule"] = "Parsing complete"
+                result = True
                 break
             elif top == current_token:
                 self.stack.pop()
@@ -75,3 +78,4 @@ class LL1:
                 file.write(f"{stack_str:<150} {input_str:<120} {rule_str}\n")
 
         print("Parsing trace has been written to output.txt")
+        return result

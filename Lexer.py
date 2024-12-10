@@ -1,5 +1,5 @@
 import re
-from tokens import *
+from tokens import RelationalOperatorToken, OperatorToken, DelimiterToken, KeywordToken, TypeToken, IdentifierToken, IntegerToken, ScientificNumberToken, FloatToken, StringToken, CharacterToken, InvalidToken
 
 
 class Lexer:
