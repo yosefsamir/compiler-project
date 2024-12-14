@@ -10,6 +10,7 @@ class LL1:
         self.trace = []
 
     def parse(self):
+        stack_input_rule_list = []
         input_pointer = 0
         if len(self.tokens) == 0:
             return True
@@ -23,7 +24,7 @@ class LL1:
         result = False
         while self.stack:
             top = self.stack[-1]
-            
+
             self.trace.append({
                 "stack": list(self.stack),
                 "input": [token.lexeme for token in self.tokens[input_pointer:]] + ["$"],
@@ -75,7 +76,12 @@ class LL1:
                 stack_str = " ".join(step["stack"])
                 input_str = " ".join(step["input"])
                 rule_str = step["rule"]
+                # TODO: Remove print statements
+                # print("Stack:", stack_str)
+                # print("Input:", input_str)
+                # print("Rule:", rule_str)
+                stack_input_rule_list.append({"stack": stack_str, "input": input_str, "rule": rule_str})
                 file.write(f"{stack_str:<150} {input_str:<120} {rule_str}\n")
 
         print("Parsing trace has been written to output.txt")
-        return result
+        return result, stack_input_rule_list

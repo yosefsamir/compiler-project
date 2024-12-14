@@ -8,5 +8,5 @@ tokens = Lexer(code).tokenize()
 parse_table = ParseTable(Rules.productions, Rules.FIRST, Rules.FOLLOW)
 parsing_table = parse_table.get_parsing_table()
 
-result = LL1(tokens, parsing_table).parse()
+result, stack_input_rule_list = LL1(tokens, parsing_table).parse()
 print(result)
