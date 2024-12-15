@@ -1,0 +1,293 @@
+Parsing Table:
+
+Program:
+  double: Declaration Program_Tail
+  float: Declaration Program_Tail
+  char: Declaration Program_Tail
+  int: Declaration Program_Tail
+  string: Declaration Program_Tail
+  small: Declaration Program_Tail
+  function: Declaration Program_Tail
+  big: Declaration Program_Tail
+  bool: Declaration Program_Tail
+  print: Statement Program_Tail
+  return: Statement Program_Tail
+  for: Statement Program_Tail
+  if: Statement Program_Tail
+  id: Statement Program_Tail
+  while: Statement Program_Tail
+
+Program_Tail:
+  double: Program
+  float: Program
+  int: Program
+  id: Program
+  char: Program
+  while: Program
+  string: Program
+  print: Program
+  small: Program
+  return: Program
+  for: Program
+  if: Program
+  function: Program
+  big: Program
+  bool: Program
+  $: ε
+  }: ε
+
+Declaration:
+  double: Variable_Declaration
+  float: Variable_Declaration
+  char: Variable_Declaration
+  int: Variable_Declaration
+  string: Variable_Declaration
+  small: Variable_Declaration
+  big: Variable_Declaration
+  bool: Variable_Declaration
+  function: Function_Definition
+
+Variable_Declaration:
+  double: Type Identifier Variable_Declaration_Tail
+  float: Type Identifier Variable_Declaration_Tail
+  char: Type Identifier Variable_Declaration_Tail
+  int: Type Identifier Variable_Declaration_Tail
+  string: Type Identifier Variable_Declaration_Tail
+  small: Type Identifier Variable_Declaration_Tail
+  big: Type Identifier Variable_Declaration_Tail
+  bool: Type Identifier Variable_Declaration_Tail
+
+Variable_Declaration_Tail:
+  =: = Expression End_Line
+  ;: End_Line
+  [: [ Number ] Variable_Array_Tail
+
+Variable_Array_Tail:
+  ;: End_Line
+  =: = { Array_Values } End_Line
+
+Type:
+  small: small int
+  float: float
+  double: double
+  char: char
+  int: int
+  string: string
+  big: big int
+  bool: bool
+
+Array_Values:
+  id: Expression Array_Values_Tail
+  num: Expression Array_Values_Tail
+  str: Expression Array_Values_Tail
+  (: Expression Array_Values_Tail
+
+Array_Values_Tail:
+  ,: , Expression Array_Values_Tail
+  }: ε
+
+Function_Definition:
+  function: function Identifier ( Parameters ) { Program }
+
+Parameters:
+  double: Parameter Parameters_Tail
+  float: Parameter Parameters_Tail
+  char: Parameter Parameters_Tail
+  int: Parameter Parameters_Tail
+  string: Parameter Parameters_Tail
+  small: Parameter Parameters_Tail
+  big: Parameter Parameters_Tail
+  bool: Parameter Parameters_Tail
+
+Parameters_Tail:
+  ,: , Parameter Parameters_Tail
+  ): ε
+  ;: ε
+
+Parameter:
+  double: Type Identifier Parameter_Tail
+  float: Type Identifier Parameter_Tail
+  char: Type Identifier Parameter_Tail
+  int: Type Identifier Parameter_Tail
+  string: Type Identifier Parameter_Tail
+  small: Type Identifier Parameter_Tail
+  big: Type Identifier Parameter_Tail
+  bool: Type Identifier Parameter_Tail
+
+Parameter_Tail:
+  {: { }
+  ε: ε
+  ,: ε
+  =: = Expression
+
+Statement:
+  print: Print
+  for: For_Statement
+  if: If_Statement
+  id: Assignment
+  while: While_Statement
+  return: Return_Statement
+
+Assignment:
+  id: Identifier = Expression End_Line
+
+If_Statement:
+  if: if ( Conditions ) { Program } If_Statement_Tail
+
+If_Statement_Tail:
+  elseif: Else_If_Statements Optional_Else
+  else: Else_If_Statements Optional_Else
+  double: Else_If_Statements Optional_Else
+  int: Else_If_Statements Optional_Else
+  id: Else_If_Statements Optional_Else
+  char: Else_If_Statements Optional_Else
+  print: Else_If_Statements Optional_Else
+  for: Else_If_Statements Optional_Else
+  if: Else_If_Statements Optional_Else
+  function: Else_If_Statements Optional_Else
+  bool: Else_If_Statements Optional_Else
+  ε: Else_If_Statements Optional_Else
+  float: Else_If_Statements Optional_Else
+  while: Else_If_Statements Optional_Else
+  small: Else_If_Statements Optional_Else
+  return: Else_If_Statements Optional_Else
+  big: Else_If_Statements Optional_Else
+  string: Else_If_Statements Optional_Else
+
+Else_If_Statements:
+  else: ε
+  ε: ε
+  elseif: Else_If_Statement Else_If_Statements
+
+Else_If_Statement:
+  elseif: elseif ( Conditions ) { Program }
+
+Optional_Else:
+  else: Else_Statement
+  double: ε
+  int: ε
+  id: ε
+  char: ε
+  print: ε
+  for: ε
+  if: ε
+  function: ε
+  bool: ε
+  ε: ε
+  float: ε
+  while: ε
+  small: ε
+  return: ε
+  big: ε
+  string: ε
+
+Else_Statement:
+  else: else { Program }
+
+While_Statement:
+  while: while ( Conditions ) { Program }
+
+For_Statement:
+  for: for ( Parameters ; Conditions ; Assignment ) { Program }
+
+Return_Statement:
+  return: return Expression End_Line
+
+Function_Call:
+  id: Identifier ( Arguments ) End_Line
+
+Arguments:
+  id: Expression Arguments_Tail
+  num: Expression Arguments_Tail
+  str: Expression Arguments_Tail
+  (: Expression Arguments_Tail
+
+Arguments_Tail:
+  ): ε
+  ,: , Expression Arguments_Tail
+
+Expression:
+  id: Term Expression_Tail
+  num: Term Expression_Tail
+  str: Term Expression_Tail
+  (: Term Expression_Tail
+
+Expression_Tail:
+  +: + Term Expression_Tail
+  -: - Term Expression_Tail
+  <: ε
+  !=: ε
+  ;: ε
+  id: ε
+  ): ε
+  ==: ε
+  ,: ε
+  >: ε
+  str: ε
+  (: ε
+  &&: ε
+  <=: ε
+  num: ε
+  ε: ε
+  >=: ε
+
+Term:
+  id: Factor Term_Tail
+  num: Factor Term_Tail
+  str: Factor Term_Tail
+  (: Factor Term_Tail
+
+Term_Tail:
+  /: / Factor Term_Tail
+  +: ε
+  -: ε
+  ε: ε
+  *: * Factor Term_Tail
+
+Factor:
+  str: string_literal
+  num: Number
+  id: Identifier
+  (: ( Expression )
+
+Conditions:
+  id: Condition Conditions_Tail
+  num: Condition Conditions_Tail
+  str: Condition Conditions_Tail
+  (: Condition Conditions_Tail
+
+Conditions_Tail:
+  &&: && Condition Conditions_Tail
+  ||: || Condition Conditions_Tail
+  ): ε
+  ;: ε
+
+Condition:
+  id: Expression Relational_Operator Expression
+  num: Expression Relational_Operator Expression
+  str: Expression Relational_Operator Expression
+  (: Expression Relational_Operator Expression
+
+Relational_Operator:
+  <: <
+  >: >
+  !=: !=
+  <=: <=
+  ==: ==
+  >=: >=
+
+Print:
+  print: print ( Expression ) End_Line
+
+End_Line:
+  ;: ;
+
+Identifier:
+  id: id
+
+string_literal:
+  str: str
+
+Number:
+  num: num
+

@@ -12,7 +12,6 @@ class LL1:
     def parse(self):
         stack_input_rule_list = []
         input_pointer = 0
-        print("Parsing...")
         if len(self.tokens) == 0:
             return True, stack_input_rule_list
         current_token = self.tokens[input_pointer].lexeme
@@ -77,10 +76,6 @@ class LL1:
                 stack_str = " ".join(step["stack"])
                 input_str = " ".join(step["input"])
                 rule_str = step["rule"]
-                # TODO: Remove print statements
-                # print("Stack:", stack_str)
-                # print("Input:", input_str)
-                # print("Rule:", rule_str)
                 stack_input_rule_list.append({"stack": stack_str, "input": input_str, "rule": rule_str})
                 file.write(f"{stack_str:<150} {input_str:<120} {rule_str}\n")
 

@@ -48,14 +48,12 @@ def parse():
                 elif isinstance(token, InvalidToken):
                     type = "Invalid"
                 tokens_list.append({"value": token.lexeme, "type": type})
-                # tokens_list.append({"value": token.value, "type": token.type})
-            # print(tokens_list)
+
 
             parse_table = ParseTable(Rules.productions, Rules.FIRST, Rules.FOLLOW)
             parsing_table = parse_table.get_parsing_table()
 
             result, stack_input_rule_list = LL1(tokens, parsing_table).parse()
-            # print(stack_input_rule_list)
             data = {
                 "lexer": tokens_list,
                 "parser": stack_input_rule_list

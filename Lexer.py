@@ -23,7 +23,7 @@ class Lexer:
         return word in operators
 
     def is_delimiter(self, word):
-        delimiters = [' ', '(', ')', '[', ']', '{', '}', ',', ';', '+', '-', '*', '/', '=', '<', '>', '&', '|']
+        delimiters = [' ', '(', ')', '[', ']', '{', '}', ',', ';', '+', '-', '*', '/', '=', '<', '>', '&', '|','%']
         return word in delimiters
 
     def is_valid_identifier(self, word):
