@@ -12,8 +12,9 @@ class LL1:
     def parse(self):
         stack_input_rule_list = []
         input_pointer = 0
+        print("Parsing...")
         if len(self.tokens) == 0:
-            return True
+            return True, stack_input_rule_list
         current_token = self.tokens[input_pointer].lexeme
         if isinstance(self.tokens[input_pointer], IntegerToken) or isinstance(self.tokens[input_pointer], FloatToken):
             current_token = 'num'

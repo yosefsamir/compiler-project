@@ -61,7 +61,12 @@
         .highlight {
             animation: fadeHighlight 1s;
         }
-
+        * {
+    user-select: none; /* Prevent text selection */
+    -webkit-user-select: none; /* For WebKit-based browsers */
+    -moz-user-select: none; /* For Firefox */
+    -ms-user-select: none; /* For IE10+ */
+    }
         @keyframes fadeHighlight {
             0% {
                 background-color: yellow;
@@ -84,6 +89,20 @@
     <br>
     <button id="parseButton">Parse</button>
     <div id="result">
+        <h2>Lexer Result</h2>
+        <table id="lexerTable">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Results will be dynamically inserted here -->
+            </tbody>
+        </table>
+
+
         <h2>Parsing Result</h2>
         <table id="resultTable">
             <thead>
@@ -122,20 +141,38 @@
                     return response.json();
                 })
                 .then(data => {
-                    parsedData = data;
+                    
+                    document.querySelector('#lexerTable tbody').innerHTML = '';
+                    lexerData = data.lexer;
+                    for (const entry of lexerData) {
+                        const tbody = document.querySelector('#lexerTable tbody');
+
+                        const row = document.createElement('tr');
+
+                        const typeCell = document.createElement('td');
+                        typeCell.textContent = entry.type;
+                        row.appendChild(typeCell);
+
+                        const valueCell = document.createElement('td');
+                        valueCell.textContent = entry.value;
+                        row.appendChild(valueCell);
+
+                        tbody.appendChild(row);
+                    }
+                    parserData = data.parser;
                     currentIndex = 0;
                     document.getElementById('nextButton').disabled = false;
                     const tbody = document.querySelector('#resultTable tbody');
                     tbody.innerHTML = '';
                 })
-                .catch(error => {
-                    alert(`An error occurred while parsing the code: ${error.message}`);
-                });
+            
+                document.getElementById('nextButton').textContent = 'Next';
+                
         });
 
         document.getElementById('nextButton').addEventListener('click', function () {
-            if (currentIndex < parsedData.length) {
-                const entry = parsedData[currentIndex];
+            if (currentIndex < parserData.length) {
+                const entry = parserData[currentIndex];
                 const tbody = document.querySelector('#resultTable tbody');
 
                 const row = document.createElement('tr');
@@ -160,7 +197,7 @@
 
                 currentIndex++;
 
-                if (currentIndex >= parsedData.length) {
+                if (currentIndex >= parserData.length) {
                     document.getElementById('nextButton').disabled = true;
                     document.getElementById('nextButton').textContent = 'End';
                 }

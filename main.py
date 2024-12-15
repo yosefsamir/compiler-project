@@ -1,5 +1,5 @@
-from Lexer import *
-from Parser2 import *
+from Lexer import Lexer
+from Parser2 import LL1
 import Rules
 from ParseTable import ParseTable
 
