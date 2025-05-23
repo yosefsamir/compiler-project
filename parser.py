@@ -1,181 +1,83 @@
 from tokens import *
-class Parser:
-    def __init__(self, tokens):
+
+class LL1:
+    def __init__(self, tokens, Parsing_table):
         self.tokens = tokens
-        self.index = 0
-        self.token = self.tokens[self.index]
-
-    def move(self):
-        self.index += 1
-        if self.index < len(self.tokens):
-            self.token = self.tokens[self.index]
-
-    def factor(self):
-        if isinstance(self.token, (IntegerToken, FloatToken)): 
-            value = self.token.lexeme
-            self.move()
-            return value
-        elif isinstance(self.token, IdentifierToken):  
-            var_name = self.token.lexeme
-            self.move()
-            return var_name
-        elif self.token.lexeme == '(': 
-            self.move()
-            expr = self.expression()
-            if self.token.lexeme != ')':
-                raise SyntaxError(f"Expected ')', but found {self.token.lexeme}")
-            self.move()
-            return expr
-        raise SyntaxError(f"Unexpected token: {self.token.lexeme}")
-
-    def term(self):
-        left_node = self.factor()
-        while self.token.lexeme in ['*', '/']: 
-            operation = self.token.lexeme
-            self.move()
-            right_node = self.factor()
-            left_node = [left_node, operation, right_node]
-        return left_node
-
-    def expression(self):
-        left_node = self.term()
-        while self.token.lexeme in ['+', '-']: 
-            operation = self.token.lexeme
-            self.move()
-            right_node = self.term()
-            left_node = [left_node, operation, right_node]
-        return left_node
-
-    def variable(self):
-        if isinstance(self.token, IdentifierToken):
-            var_name = self.token.lexeme
-            self.move()
-            return var_name
-        raise SyntaxError(f"Expected an identifier, but found {self.token.lexeme}")
-
-    def statement(self):
-        if isinstance(self.token, TypeToken):  
-            self.move()
-            left_node = self.variable()
-            if self.token.lexeme == "=":
-                operation = self.token.lexeme
-                self.move()
-                right_node = self.expression()
-                return [left_node, operation, right_node]
-        elif isinstance(self.token , IdentifierToken):
-            left_node = self.variable()
-            if self.token.lexeme == "=":
-                operation = self.token.lexeme
-                self.move()
-                right_node = self.expression()
-                return [left_node, operation, right_node]
-        elif isinstance(self.token, (IntegerToken, FloatToken, IdentifierToken)): 
-            return self.expression()
-        elif isinstance(self.token, KeywordToken) and self.token.lexeme == "if":
-            return self.if_statement()
-        raise SyntaxError(f"Invalid statement starting with {self.token.lexeme}")
+        self.Parsing_table = Parsing_table
+        self.stack = []
+        self.stack.append('$')
+        self.stack.append('Program')
+        self.trace = []
 
     def parse(self):
-        statements = []
-        while self.index < len(self.tokens):
-            statement = self.statement()
-            if self.token.lexeme != ";":
-                raise SyntaxError(f"Expected ';' at the end of the statement, but found {self.token.lexeme}")
-            self.move()  
-            statements.append(statement)
-        return statements
+        stack_input_rule_list = []
+        input_pointer = 0
+        if len(self.tokens) == 0:
+            return True, stack_input_rule_list
+        current_token = self.tokens[input_pointer].lexeme
+        if isinstance(self.tokens[input_pointer], IntegerToken) or isinstance(self.tokens[input_pointer], FloatToken):
+            current_token = 'num'
+        elif isinstance(self.tokens[input_pointer], StringToken) or isinstance(self.tokens[input_pointer], CharacterToken):
+            current_token = 'str'
+        elif isinstance(self.tokens[input_pointer], IdentifierToken):
+            current_token = 'id'
+        result = False
+        while self.stack:
+            top = self.stack[-1]
 
+            self.trace.append({
+                "stack": list(self.stack),
+                "input": [token.lexeme for token in self.tokens[input_pointer:]] + ["$"],
+                "rule": ""
+            })
 
-    def if_statement(self):
-        if self.token.lexeme == "if":
-            self.move()
-            if self.token.lexeme == "(":
-                self.move()
-                conditions = self.conditions()
-                if self.token.lexeme == ")":
-                    self.move()
-                    if self.token.lexeme == "{":
-                        self.move()
-                        program = self.program()
-                        if self.token.lexeme == "}":
-                            self.move()
-                            else_if_statement = None
-                            else_statement = None
-                            if self.token.lexeme == "else":
-                                else_statement = self.else_statement()
-                            elif self.token.lexeme == "elseif":
-                                else_if_statement = self.else_if_statement()
-                            return {"type": "if", "conditions": conditions, "program": program, 
-                                    "else_if": else_if_statement, "else": else_statement}
-        raise SyntaxError(f"Expected 'if' statement, but found {self.token.lexeme}")
+            if top == '$' and current_token == '$':
+                self.trace[-1]["rule"] = "Parsing complete"
+                result = True
+                break
+            elif top == current_token:
+                self.stack.pop()
+                self.trace[-1]["rule"] = f"Match: {top}"
+                input_pointer += 1
+                if input_pointer < len(self.tokens):
+                    current_token = self.tokens[input_pointer].lexeme
+                    if isinstance(self.tokens[input_pointer], IntegerToken) or isinstance(self.tokens[input_pointer], FloatToken):
+                        current_token = 'num'
+                    elif isinstance(self.tokens[input_pointer], StringToken) or isinstance(self.tokens[input_pointer], CharacterToken):
+                        current_token = 'str'
+                    elif isinstance(self.tokens[input_pointer], IdentifierToken):
+                        current_token = 'id'
+                else:
+                    current_token = '$'
+            elif top in self.Parsing_table:
+                rule = self.Parsing_table[top].get(current_token)
+                if rule:
+                    self.stack.pop()
+                    self.trace[-1]["rule"] = f"{top} → {rule}"
 
-    def else_if_statement(self):
-        else_if_nodes = []
-        while self.token.lexeme == "elseif":
-            self.move()  # Skip 'elseif'
-            if self.token.lexeme == "(":
-                self.move()
-                conditions = self.conditions()
-                if self.token.lexeme == ")":
-                    self.move()
-                    if self.token.lexeme == "{":
-                        self.move()
-                        program = self.program()
-                        if self.token.lexeme == "}":
-                            self.move()
-                            else_if_nodes.append({"conditions": conditions, "program": program})
-                        else:
-                            raise SyntaxError(f"Expected '}}', but found {self.token.lexeme}")
-        return else_if_nodes
+                    for symbol in reversed(rule.split()):
+                        if symbol != "ε":
+                            self.stack.append(symbol)
+                elif "ε" in self.Parsing_table[top]:
+                    self.stack.pop()
+                    self.trace[-1]["rule"] = f"{top} → ε"
+                else:
+                    self.trace[-1]["rule"] = f"Error: No rule for {top} with {current_token}"
+                    break
+            else:
+                self.trace[-1]["rule"] = f"Error: Unexpected token {current_token}"
+                break
 
-    def else_statement(self):
-        if self.token.lexeme == "else":
-            self.move()
-            if self.token.lexeme == "{":
-                self.move()
-                program = self.program()
-                if self.token.lexeme == "}":
-                    self.move()
-                    return program
-        raise SyntaxError(f"Expected 'else' statement, but found {self.token.lexeme}")
+        # Write to file
+        with open("output.txt", "w", encoding="utf-8") as file:
+            file.write(f"{'Stack':<150} {'Input':<120} {'Rule'}\n")
+            file.write("-" * 300 + "\n")
+            for step in self.trace:
+                stack_str = " ".join(step["stack"])
+                input_str = " ".join(step["input"])
+                rule_str = step["rule"]
+                stack_input_rule_list.append({"stack": stack_str, "input": input_str, "rule": rule_str})
+                file.write(f"{stack_str:<150} {input_str:<120} {rule_str}\n")
 
-    def conditions(self):
-        condition_node = self.condition()
-        tail_node = self.conditions_tail()
-        return {"condition": condition_node, "tail": tail_node}
-
-    def conditions_tail(self):
-        if self.token.lexeme in ["&&", "||"]:
-            operator = self.token.lexeme
-            self.move()
-            condition_node = self.condition()
-            tail_node = self.conditions_tail()
-            return {"operator": operator, "condition": condition_node, "tail": tail_node}
-        return None  # ε (empty)
-
-    def condition(self):
-        left_expr = self.expression()
-        relational_operator = self.relational_operator()
-        right_expr = self.expression()
-        return {"left": left_expr, "operator": relational_operator, "right": right_expr}
-
-    def relational_operator(self):
-        if self.token.lexeme in ["==", "!=", "<", "<=", ">", ">="]:
-            operator = self.token.lexeme
-            self.move()
-            return operator
-        raise SyntaxError(f"Expected relational operator, but found {self.token.lexeme}")
-
-    def program(self):
-        program_statements = []
-        while self.token.lexeme != "}":
-            statement = self.statement()
-            program_statements.append(statement)
-            if self.token.lexeme == ";":
-                self.move()
-        return program_statements
-
-    def peek(self, n):
-        if self.index + n < len(self.tokens):
-            return self.tokens[self.index + n]
-        return None
+        print("Parsing trace has been written to output.txt")
+        return result, stack_input_rule_list

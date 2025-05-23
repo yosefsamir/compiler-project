@@ -4,22 +4,28 @@ This project implements a lexical analyzer and parser for a custom programming l
 
 ## Project Structure
 
-The project consists of several key components:
+The project consists of the following core components:
 
-### Core Components
+### Source Files
 
-1. **Lexer (`Lexer.py`)**
+1. **Main Entry Point (`main.py`)**
+   - Orchestrates the compilation process
+   - Reads input code
+   - Coordinates tokenization and parsing
+   - Generates output files
+
+2. **Lexical Analyzer (`Lexer.py`)**
    - Implements lexical analysis
    - Tokenizes input code into meaningful tokens
    - Supports various token types including keywords, identifiers, operators, and literals
 
-2. **Parser (`Parser2.py`)**
+3. **Parser (`Parser.py`)**
    - Implements LL(1) parsing algorithm
    - Uses a parsing table to validate syntax
    - Generates detailed parsing trace
    - Outputs parsing results to `output.txt`
 
-3. **Token Definitions (`tokens.py`)**
+4. **Token Definitions (`tokens.py`)**
    - Defines various token classes:
      - `Token` (base class)
      - `KeywordToken`
@@ -35,7 +41,7 @@ The project consists of several key components:
      - `CharacterToken`
      - `InvalidToken`
 
-4. **Grammar Rules (`rules2.py`)**
+5. **Grammar Rules (`Rules.py`)**
    - Defines the grammar productions
    - Implements FIRST and FOLLOW set computations
    - Contains grammar rules for:
@@ -45,19 +51,19 @@ The project consists of several key components:
      - Control structures (if, while, for)
      - Expressions and conditions
 
-5. **Parse Table Generator (`ParseTable.py`)**
+6. **Parse Table Generator (`ParseTable.py`)**
    - Generates LL(1) parsing table
    - Computes terminals and non-terminals
    - Writes parsing table to `parseTable.txt`
 
-### Main Entry Point
+### Generated Files
 
-- `main.py`: Orchestrates the compilation process:
-  1. Reads input code from `code.j`
-  2. Tokenizes the code
-  3. Generates parsing table
-  4. Performs syntax analysis
-  5. Outputs results
+1. `parseTable.txt`: Contains the LL(1) parsing table
+2. `output.txt`: Contains the parsing trace and results
+
+### Example Files
+
+1. `code.j`: Example source code file demonstrating the language syntax
 
 ## Usage
 
@@ -95,15 +101,18 @@ The language supports:
 - Python 3.x
 - No external dependencies required
 
-## Note
+## Development Setup
 
-The project uses a custom file extension `.j` for source code files. Make sure your input code follows the grammar rules defined in `rules2.py`.
-
-## Unused Files
-
-Based on the current implementation, there might be some files that are not being used:
-- `Rules.py` (referenced in main.py but not shown in the codebase)
-- Any backup or old versions of files (if they exist)
+1. Clone the repository
+2. Create a virtual environment (optional but recommended):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+3. Run the compiler:
+   ```bash
+   python main.py
+   ```
 
 ## Future Improvements
 
@@ -115,3 +124,15 @@ Based on the current implementation, there might be some files that are not bein
 6. Implement optimization passes
 7. Add unit tests
 8. Include documentation for the language syntax
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is open source and available under the MIT License.

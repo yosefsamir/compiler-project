@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from Lexer import Lexer
 from tokens import KeywordToken, TypeToken, IdentifierToken, OperatorToken, RelationalOperatorToken, DelimiterToken, IntegerToken, FloatToken, ScientificNumberToken, StringToken, CharacterToken, InvalidToken
-from Parser2 import LL1
+from Parser import LL1
 import Rules
 from ParseTable import ParseTable
 # import webview
