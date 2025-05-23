@@ -4,10 +4,10 @@ from tokens import KeywordToken, TypeToken, IdentifierToken, OperatorToken, Rela
 from Parser2 import LL1
 import Rules
 from ParseTable import ParseTable
-import webview
+# import webview
 
 app = Flask(__name__)
-window = webview.create_window("Parser GUI", app, width=1500, height=1000)
+# window = webview.create_window("Parser GUI", app, width=1500, height=1000)
 
 @app.route("/")
 def home():
